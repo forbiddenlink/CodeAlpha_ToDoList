@@ -1,4 +1,4 @@
-const CACHE_NAME = 'todo-app-v1.3'; // Incremented cache version to force refresh
+const CACHE_NAME = 'todo-app-v2.0'; // Major version update for CSS fixes
 const STATIC_CACHE = `${CACHE_NAME}-static`;
 const DYNAMIC_CACHE = `${CACHE_NAME}-dynamic`;
 

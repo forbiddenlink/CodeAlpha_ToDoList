@@ -1,62 +1,150 @@
-/* === AUTHORITATIVE SELECT AND DATE INPUT STYLES (OVERRIDE ALL) === */
+/* === IMPROVED SELECT AND DATE INPUT STYLES === */
 .priority-select, .category-select {
-    background-color: var(--input-bg) !important;
+    /* Core styling */
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    
+    /* Sizing */
+    height: 48px !important;
+    padding: 8px 40px 8px 16px !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    
+    /* Dropdown arrow styling */
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") !important;
     background-repeat: no-repeat !important;
     background-position: calc(100% - 12px) center !important;
-    background-size: 14px !important;
-    padding-right: 40px !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 8px !important;
-    font-size: 1.05rem !important;
-    color: var(--text-color) !important;
-    min-height: 48px !important;
-    min-width: 180px !important;
+    background-size: 12px !important;
+    
+    /* Layout */
     width: 100% !important;
     max-width: 400px !important;
+    
+    /* Remove default styling */
     appearance: none !important;
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
+    
+    /* Additional properties */
     box-sizing: border-box !important;
-    position: relative !important;
-    z-index: 1;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
     text-overflow: ellipsis !important;
+    cursor: pointer !important;
 }
-.priority-select::-ms-expand, .category-select::-ms-expand {
+
+/* Dark mode specific select styling */
+[data-theme="dark"] .priority-select, 
+[data-theme="dark"] .category-select {
+    background-color: var(--input-bg) !important;
+    border-color: #2d3748 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a0aec0' viewBox='0 0 16 16'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") !important;
+}
+
+/* Hover and focus states */
+.priority-select:hover, 
+.category-select:hover {
+    border-color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .priority-select:hover, 
+[data-theme="dark"] .category-select:hover {
+    border-color: #4a5568 !important;
+}
+
+.priority-select:focus, 
+.category-select:focus {
+    outline: none !important;
+    border-color: var(--info-color) !important;
+    box-shadow: 0 0 0 3px var(--focus-ring) !important;
+}
+
+/* Hide default arrow in IE */
+.priority-select::-ms-expand, 
+.category-select::-ms-expand {
     display: none !important;
 }
 
+/* Date input styling */
 .due-date-input {
-    background: var(--input-bg) !important;
+    /* Core styling */
+    background: var(--bg-color) !important;
+    color: var(--text-color) !important;
     border: 1px solid var(--border-color) !important;
     border-radius: 8px !important;
-    padding: 12px 16px !important;
-    font-size: 1.05rem !important;
-    color: var(--text-color) !important;
-    min-height: 48px !important;
-    min-width: 180px !important;
+    
+    /* Sizing */
+    height: 48px !important;
+    padding: 8px 16px !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    
+    /* Layout */
     width: 100% !important;
     max-width: 400px !important;
+    
+    /* Additional properties */
     box-sizing: border-box !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
+}
+
+/* Dark mode specific date input styling */
+[data-theme="dark"] .due-date-input {
+    background-color: var(--input-bg) !important;
+    border-color: #2d3748 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Hover and focus states */
+.due-date-input:hover {
+    border-color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .due-date-input:hover {
+    border-color: #4a5568 !important;
+}
+
+.due-date-input:focus {
+    outline: none !important;
+    border-color: var(--info-color) !important;
+    box-shadow: 0 0 0 3px var(--focus-ring) !important;
 }
 
 /* Bulletproof dark mode calendar icon for date input */
 [data-theme="dark"] input[type="date"].due-date-input::-webkit-calendar-picker-indicator {
-    filter: invert(1) brightness(2) !important;
+    filter: invert(1) brightness(1.8) !important;
     opacity: 0.9 !important;
 }
+
+/* Calendar icon styling for all browsers */
+input[type="date"].due-date-input::-webkit-calendar-picker-indicator {
+    opacity: 0.8 !important;
+    margin-right: 4px !important;
+    cursor: pointer !important;
+}
+
+/* Dark mode calendar icon styling */
+[data-theme="dark"] input[type="date"].due-date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(1.8) !important;
+    opacity: 0.9 !important;
+}
+
+/* Placeholder text styling for dark mode */
 [data-theme="dark"] input[type="date"].due-date-input::-webkit-input-placeholder {
-    color: #fff !important;
+    color: #a0aec0 !important;
 }
 [data-theme="dark"] input[type="date"].due-date-input::placeholder {
-    color: #fff !important;
+    color: #a0aec0 !important;
 }
 [data-theme="dark"] input[type="date"].due-date-input::-moz-placeholder {
-    color: #fff !important;
+    color: #a0aec0 !important;
 }
 [data-theme="dark"] input[type="date"].due-date-input::-ms-input-placeholder {
-    color: #fff !important;
-}
+    color: #a0aec0 !important;
 }
 
 * {
@@ -93,11 +181,6 @@
     --notification-bg: rgba(15, 23, 42, 0.95);
     --input-bg: #1e293b;
     --focus-ring: rgba(96, 165, 250, 0.5);
-}
-
-/* Calendar icon color for dark mode */
-[data-theme="dark"] input[type="date"].due-date-input::-webkit-calendar-picker-indicator {
-    filter: invert(1) brightness(1.5);
 }
 
 .header-top {
@@ -229,9 +312,6 @@ header p {
     color: var(--text-secondary);
 }
 
-/* Enhanced select styling with better accessibility */
-.priority-select {
-
 /* Enhanced add button with better accessibility */
 .add-btn {
     background: var(--success-color);
@@ -329,27 +409,13 @@ header p {
     background: var(--input-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 12px 48px 12px 16px; /* More right padding for arrow */
-    font-size: 1.05rem;
+    padding: 12px 16px;
+    font-size: 1rem;
     color: var(--text-color);
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
-    min-height: 48px;
-    min-width: 180px;
-    width: 100%;
-    max-width: 400px;
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    background-image: none !important;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 1;
-}
-.priority-select::-ms-expand {
-    display: none;
-}
+    min-height: 44px;
 }
 
 .filter-btn:focus {
@@ -882,9 +948,6 @@ header p {
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    .category-select {
-        background: var(--input-bg) url('data:image/svg+xml;utf8,<svg fill="%2364778b" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7.293 8.293a1 1 0 011.414 0L10 9.586l1.293-1.293a1 1 0 111.414 1.414l-2 2a1 1 0 01-1.414 0l-2-2a1 1 0 010-1.414z"/></svg>') no-repeat right 1.2em center/1.2em 1.2em;
-        padding-right: 3em;
     z-index: 1000;
     display: flex;
     flex-direction: column;
@@ -975,53 +1038,7 @@ header p {
     box-sizing: border-box;
 }
 
-.category-select {
-    background: var(--input-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 12px 48px 12px 16px; /* More right padding for arrow */
-    font-size: 1.05rem;
-    color: var(--text-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: inherit;
-    min-height: 48px;
-    min-width: 180px;
-    width: 100%;
-    max-width: 400px;
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    background-image: none !important;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 1;
-}
-.category-select::-ms-expand {
-    display: none;
-}
-}
-.category-select::-ms-expand {
-    display: none;
-}
-
-.category-select:hover {
-    border-color: var(--info-color);
-    background: var(--hover-color);
-}
-
-.category-select:focus {
-    outline: none;
-    border-color: var(--info-color);
-    box-shadow: 0 0 0 3px var(--focus-ring);
-}
-
-.category-select option {
-    background: var(--input-bg);
-    color: var(--text-color);
-    padding: 8px;
-    font-family: inherit;
-}
+/* Removed duplicate styles */
 
 .category-select option:hover {
     background: var(--hover-color);
@@ -1050,34 +1067,7 @@ header p {
     opacity: 0.8;
 }
 
-/* Enhanced due date input */
-.due-date-input {
-    background: var(--input-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 1.05rem;
-    color: var(--text-color);
-    transition: all 0.3s ease;
-    font-family: inherit;
-    min-height: 48px;
-    min-width: 180px;
-    width: 100%;
-    max-width: 400px;
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-.due-date-input:hover {
-    border-color: var(--info-color);
-    background: var(--hover-color);
-}
-
-.due-date-input:focus {
-    outline: none;
-    border-color: var(--info-color);
-    box-shadow: 0 0 0 3px var(--focus-ring);
-}
+/* Enhanced due date input - Removed duplicate styles */
 
 /* Enhanced category badges */
 .category-badge {
@@ -1137,14 +1127,7 @@ header p {
 }
 
 /* Dark theme enhancements */
-[data-theme="dark"] .category-select {
-    background: var(--input-bg);
-    color: var(--text-color);
-}
-
-[data-theme="dark"] .category-select:hover {
-    background: var(--hover-color);
-}
+/* Removed duplicate styles */
 
 [data-theme="dark"] .category-select:focus {
     border-color: var(--info-color);
@@ -1218,10 +1201,19 @@ header p {
     .todo-item {
         padding-right: 80px;
     }
-
 }
 
-@media (max-width: 768px) {
+.todo-item.selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(59, 130, 246, 0.1) 50%, transparent 70%);
+    animation: shimmer 2s infinite;
+    pointer-events: none;
+}
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
@@ -1251,19 +1243,7 @@ header p {
 
 /* === FIX FOR ARROW OVERLAP AND DARK MODE CALENDAR === */
 /* Reset and override all select styling */
-select.priority-select,
-select.category-select {
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  appearance: none !important;
-  background-color: var(--input-bg) !important;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") !important;
-  background-repeat: no-repeat !important;
-  background-position: calc(100% - 12px) center !important;
-  background-size: 14px !important;
-  padding-right: 40px !important; /* Ensure text doesn't overlap with arrow */
-  text-overflow: ellipsis !important;
-}
+/* Removed duplicate styles */
 
 /* Fix select in Firefox */
 select.priority-select::-ms-expand,
@@ -1271,8 +1251,4 @@ select.category-select::-ms-expand {
   display: none !important;
 }
 
-/* Ensure dark mode calendar icon is white */
-[data-theme="dark"] input[type="date"].due-date-input::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(2) !important;
-  opacity: 0.9 !important;
-}
+
