@@ -265,6 +265,5 @@ The app uses CSS custom properties for easy theming:
 ## ❤️ Closing Note
 
 Built with modern web technologies and best practices for responsive, accessible web applications.
-  
  
 
