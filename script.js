@@ -6,8 +6,6 @@ class TodoApp {
         this.isDarkMode = this.getInitialDarkMode();
         this.selectedTaskIndex = -1;
         this.isLoading = false;
-        this.lastDeleted = null; // For undo
-        this.lastCleared = null; // For undo
         this.init();
     }
 
@@ -358,23 +356,12 @@ class TodoApp {
         const todo = this.todos.find(t => t.id === id);
         if (todo) {
             const index = this.todos.indexOf(todo);
-            this.lastDeleted = { ...todo, index };
             this.todos.splice(index, 1);
             this.saveTodos();
             this.renderTodos();
             this.updateStats();
-            this.showUndoToast('Task deleted', () => this.undoDelete());
-        }
-    }
-
-    undoDelete() {
-        if (this.lastDeleted) {
-            this.todos.splice(this.lastDeleted.index, 0, this.lastDeleted);
-            this.saveTodos();
-            this.renderTodos();
-            this.updateStats();
-            this.showToast('Task restored', 'success');
-            this.lastDeleted = null;
+            
+            this.showToast('Task deleted successfully!', 'success');
         }
     }
 
@@ -497,31 +484,19 @@ class TodoApp {
     }
 
     clearCompleted() {
-        const completedTodos = this.todos.filter(todo => todo.completed);
-        const completedCount = completedTodos.length;
+        const completedCount = this.todos.filter(todo => todo.completed).length;
+        
         if (completedCount === 0) {
             this.showToast('No completed tasks to clear', 'info');
             return;
         }
-        this.lastCleared = completedTodos;
+
         this.todos = this.todos.filter(todo => !todo.completed);
         this.saveTodos();
         this.renderTodos();
         this.updateStats();
-        this.showUndoToast(`Cleared ${completedCount} completed task${completedCount > 1 ? 's' : ''}!`, () => this.undoClearCompleted());
-    }
-
-    undoClearCompleted() {
-        if (this.lastCleared && this.lastCleared.length > 0) {
-            this.todos = this.todos.concat(this.lastCleared);
-            // Sort by createdAt to restore order
-            this.todos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            this.saveTodos();
-            this.renderTodos();
-            this.updateStats();
-            this.showToast('Completed tasks restored', 'success');
-            this.lastCleared = null;
-        }
+        
+        this.showToast(`Cleared ${completedCount} completed task${completedCount > 1 ? 's' : ''}!`, 'success');
     }
 
     getFilteredTodos() {
@@ -580,15 +555,16 @@ class TodoApp {
             return;
         }
         
-        // Render tasks without inline event handlers
         todoList.innerHTML = filteredTodos.map(todo => {
             const dueDateStatus = this.getDueDateStatus(todo.dueDate);
             const priorityClass = todo.priority !== 'normal' ? `priority-${todo.priority}` : '';
             const completedClass = todo.completed ? 'completed' : '';
+            
             return `
                 <li class="todo-item ${priorityClass} ${completedClass}" data-id="${todo.id}" tabindex="0" role="listitem">
-                    <div class="todo-checkbox ${todo.completed ? 'checked' : ''}"
-                         role="checkbox"
+                    <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" 
+                         onclick="todoApp.toggleTodo(${todo.id})" 
+                         role="checkbox" 
                          aria-checked="${todo.completed}"
                          aria-label="${todo.completed ? 'Mark as active' : 'Mark as completed'}">
                         ${todo.completed ? '<i class="fas fa-check"></i>' : ''}
@@ -602,10 +578,14 @@ class TodoApp {
                         </div>
                     </div>
                     <div class="todo-actions">
-                        <button class="action-btn edit-btn" aria-label="Edit task">
+                        <button class="action-btn edit-btn" 
+                                onclick="todoApp.editTodo(${todo.id})" 
+                                aria-label="Edit task">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="action-btn delete-btn" aria-label="Delete task">
+                        <button class="action-btn delete-btn" 
+                                onclick="todoApp.deleteTodo(${todo.id})" 
+                                aria-label="Delete task">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -613,37 +593,12 @@ class TodoApp {
             `;
         }).join('');
         
-        // Add event listeners for actions after rendering
+        // Add keyboard navigation to todo items
         todoList.querySelectorAll('.todo-item').forEach(item => {
-            const taskId = parseInt(item.dataset.id);
-            // Toggle complete on checkbox click
-            const checkbox = item.querySelector('.todo-checkbox');
-            if (checkbox) {
-                checkbox.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.toggleTodo(taskId);
-                });
-            }
-            // Edit button
-            const editBtn = item.querySelector('.edit-btn');
-            if (editBtn) {
-                editBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.editTodo(taskId);
-                });
-            }
-            // Delete button
-            const deleteBtn = item.querySelector('.delete-btn');
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.deleteTodo(taskId);
-                });
-            }
-            // Keyboard navigation
             item.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
+                    const taskId = parseInt(item.dataset.id);
                     this.toggleTodo(taskId);
                 }
             });
@@ -736,21 +691,13 @@ class TodoApp {
             try {
                 const data = JSON.parse(e.target.result);
                 const importedTodos = data.todos || data;
-                // Schema validation: must be array of objects with required fields
-                if (Array.isArray(importedTodos) && importedTodos.length > 0 && importedTodos.every(todo =>
-                    typeof todo === 'object' &&
-                    typeof todo.id === 'number' &&
-                    typeof todo.text === 'string' &&
-                    typeof todo.completed === 'boolean' &&
-                    typeof todo.priority === 'string' &&
-                    typeof todo.category === 'string' &&
-                    typeof todo.createdAt === 'string' &&
-                    typeof todo.updatedAt === 'string'
-                )) {
+                
+                if (Array.isArray(importedTodos) && importedTodos.length > 0) {
                     this.todos = importedTodos;
                     this.saveTodos();
                     this.renderTodos();
                     this.updateStats();
+                    
                     this.showToast(`Imported ${importedTodos.length} task${importedTodos.length > 1 ? 's' : ''} successfully!`, 'success');
                 } else {
                     this.showToast('Invalid file format', 'error');
@@ -768,39 +715,24 @@ class TodoApp {
         const toastContainer = document.getElementById('toast-container');
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
+        
         const icon = this.getToastIcon(type);
         toast.innerHTML = `
             <i class="${icon}" aria-hidden="true"></i>
             <span>${message}</span>
         `;
+        
         toastContainer.appendChild(toast);
+        
+        // Auto-remove after 4 seconds
         setTimeout(() => {
             if (toast.parentNode) {
                 toast.remove();
             }
         }, 4000);
+        
+        // Announce to screen readers
         this.announceToScreenReader(message);
-    }
-
-    showUndoToast(message, undoCallback) {
-        const toastContainer = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'toast info';
-        toast.innerHTML = `
-            <i class="${this.getToastIcon('info')}" aria-hidden="true"></i>
-            <span>${message}</span>
-            <button class="undo-btn" aria-label="Undo">Undo</button>
-        `;
-        const undoBtn = toast.querySelector('.undo-btn');
-        undoBtn.addEventListener('click', () => {
-            if (toast.parentNode) toast.remove();
-            undoCallback();
-        });
-        toastContainer.appendChild(toast);
-        setTimeout(() => {
-            if (toast.parentNode) toast.remove();
-        }, 6000);
-        this.announceToScreenReader(message + '. Undo available.');
     }
 
     getToastIcon(type) {
@@ -841,109 +773,13 @@ class TodoApp {
 
     setupServiceWorker() {
         if ('serviceWorker' in navigator) {
-            // Force CSS to refresh by adding a timestamp parameter
-            this.refreshCssFile();
-            
-            // Clear all caches to ensure fresh content
-            if (window.caches) {
-                caches.keys().then(function(names) {
-                    for (let name of names) {
-                        if (name.includes('css') || name.includes('dynamic')) {
-                            console.log('Deleting cache:', name);
-                            caches.delete(name);
-                        }
-                    }
-                });
-            }
-            
-            // Register or update the service worker
-            navigator.serviceWorker.register('sw.js')
+            navigator.serviceWorker.register('/sw.js')
                 .then(registration => {
-                    console.log('SW registered:', registration);
-                    
-                    // Handle updates
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        console.log('New service worker installing:', newWorker);
-                        
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('New service worker installed, sending skipWaiting');
-                                newWorker.postMessage({ action: 'skipWaiting' });
-                            }
-                        });
-                    });
-                    
-                    // If there's an existing controller, tell it to clear CSS cache
-                    if (navigator.serviceWorker.controller) {
-                        console.log('Telling existing service worker to clear CSS cache');
-                        navigator.serviceWorker.controller.postMessage({ 
-                            action: 'clearCssCache'
-                        });
-                    }
+                    console.log('SW registered: ', registration);
                 })
-                .catch(error => {
-                    console.error('SW registration failed:', error);
+                .catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
                 });
-            
-            // Listen for service worker updates
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.log('Service worker controller changed, reloading for fresh content');
-                // Add a small delay to ensure everything is ready
-                setTimeout(() => {
-                    // Refresh the CSS one more time before reload
-                    this.refreshCssFile();
-                    window.location.reload();
-                }, 500);
-            });
-        }
-    }
-    
-    refreshCssFile() {
-        // Add timestamp parameter to CSS file to force browser to load fresh copy
-        const timestamp = new Date().getTime();
-        const cssLink = document.querySelector('link[href^="styles.css"]');
-        
-        if (cssLink) {
-            const href = cssLink.getAttribute('href');
-            // Extract base href without query parameters
-            const baseHref = href.split('?')[0];
-            // Set new href with timestamp
-            cssLink.setAttribute('href', `${baseHref}?v=${timestamp}`);
-            console.log('CSS refreshed with timestamp:', timestamp);
-        } else {
-            console.warn('CSS link not found in document');
-        }
-    }
-    
-    // Request notification permission on load
-    setupNotificationPermission() {
-        if ('Notification' in window) {
-            if (Notification.permission === 'default') {
-                // Show a button to request permission
-                let notifBtn = document.getElementById('notification-permission-btn');
-                if (!notifBtn) {
-                    notifBtn = document.createElement('button');
-                    notifBtn.id = 'notification-permission-btn';
-                    notifBtn.className = 'export-btn';
-                    notifBtn.innerHTML = '<i class="fas fa-bell"></i> Enable Notifications';
-                    notifBtn.style.marginLeft = '10px';
-                    notifBtn.setAttribute('aria-label', 'Enable notifications');
-                    notifBtn.addEventListener('click', () => {
-                        Notification.requestPermission().then(permission => {
-                            if (permission === 'granted') {
-                                this.showToast('Notifications enabled!', 'success');
-                                notifBtn.remove();
-                            } else {
-                                this.showToast('Notifications denied', 'warning');
-                            }
-                        });
-                    });
-                    // Add to header or controls
-                    const controls = document.querySelector('.control-buttons');
-                    if (controls) controls.appendChild(notifBtn);
-                }
-            }
         }
     }
 

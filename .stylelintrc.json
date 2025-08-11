@@ -1,0 +1,49 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "alpha-value-notation": "number",
+    "color-function-notation": "modern",
+    "color-hex-alpha": "never",
+    "color-hex-length": "short",
+    "color-named": "never",
+    "color-no-hex": null,
+    "comment-word-disallowed-list": ["TODO", "FIXME"],
+    "custom-property-pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+    "declaration-block-no-redundant-longhand-properties": true,
+    "declaration-no-important": null,
+    "font-family-name-quotes": "always-where-recommended",
+    "font-weight-notation": "numeric",
+    "function-url-quotes": "always",
+    "length-zero-no-unit": true,
+    "max-nesting-depth": 4,
+    "media-feature-range-notation": "context",
+    "no-descending-specificity": null,
+    "no-duplicate-selectors": true,
+    "number-max-precision": 4,
+    "property-no-vendor-prefix": null,
+    "rule-empty-line-before": [
+      "always-multi-line",
+      {
+        "except": ["first-nested"],
+        "ignore": ["after-comment"]
+      }
+    ],
+    "selector-class-pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+    "selector-id-pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+    "selector-max-compound-selectors": 4,
+    "selector-max-id": 1,
+    "selector-max-specificity": "0,4,0",
+    "selector-max-universal": 1,
+    "selector-no-qualifying-type": null,
+    "selector-no-vendor-prefix": true,
+    "shorthand-property-no-redundant-values": true,
+    "unit-allowed-list": ["px", "em", "rem", "%", "vh", "vw", "vmin", "vmax", "deg", "ms", "s"],
+    "value-keyword-case": "lower",
+    "value-no-vendor-prefix": null
+  },
+  "ignoreFiles": [
+    "node_modules/**/*",
+    "dist/**/*",
+    "coverage/**/*"
+  ]
+}

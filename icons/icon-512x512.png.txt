@@ -1,0 +1,12 @@
+/* This is a placeholder for the PNG file.
+   Since I can't directly create binary files, you should:
+   
+   1. Export the SVG we created to a 512x512 PNG file 
+   2. Save it as 'icon-512x512.png' in the icons directory
+   
+   You can do this with tools like:
+   - Inkscape (free, open-source)
+   - GIMP (free, open-source)
+   - Adobe Illustrator
+   - Or online converters like https://svgtopng.com/
+*/

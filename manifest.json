@@ -1,21 +1,29 @@
 {
-  "name": "To-Do List",
-  "short_name": "ToDo",
-  "start_url": "./index.html",
+  "name": "Todo List App",
+  "short_name": "Todo List",
+  "description": "A modern, accessible To-Do List application for managing daily tasks efficiently",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
-  "description": "A modern, accessible To-Do List application for managing daily tasks efficiently.",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
   "icons": [
     {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

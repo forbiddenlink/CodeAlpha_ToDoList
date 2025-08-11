@@ -1,0 +1,29 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "A modern, accessible To-Do List application with offline support",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 3000 -c-1",
+    "lint": "eslint script.js sw.js",
+    "lint:css": "stylelint styles.css",
+    "format": "prettier --write \"**/*.{js,html,css,json}\""
+  },
+  "keywords": [
+    "todo",
+    "task",
+    "list",
+    "pwa",
+    "offline"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "http-server": "^14.1.1",
+    "prettier": "^3.1.0",
+    "stylelint": "^15.11.0"
+  },
+  "dependencies": {
+  }
+}

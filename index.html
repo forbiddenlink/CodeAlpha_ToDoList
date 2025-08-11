@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A modern, accessible To-Do List application for managing daily tasks efficiently">
-    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" content="#2563eb">
     <title>To-Do List</title>
-    <link rel="stylesheet" href="styles.css?v=2.0">
-    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="bg-decorations"></div>
     <div class="container" role="main">
         <header>
             <div class="header-top">
@@ -154,21 +155,6 @@
         <div class="loading-spinner"></div>
     </div>
 
-        <script src="script.js"></script>
-
-        <!-- Print stylesheet -->
-        <link rel="stylesheet" href="styles.css" media="print">
-
-        <!-- noscript fallback -->
-        <noscript>
-            <style>
-                .container, .todo-app, .todo-list, .todo-form, .search-container, .todo-controls, .todo-stats, .toast-container, .loading-overlay { display: none !important; }
-                .noscript-message { display: block !important; }
-            </style>
-            <div class="noscript-message" style="padding:2em;text-align:center;font-size:1.2em;color:#b91c1c;background:#fff3f3;">
-                <strong>JavaScript is required to use this To-Do List app.</strong><br>
-                Please enable JavaScript in your browser settings.
-            </div>
-        </noscript>
+    <script src="script.js"></script>
 </body>
 </html> 
