@@ -841,19 +841,82 @@ class TodoApp {
 
     setupServiceWorker() {
         if ('serviceWorker' in navigator) {
-            // Use relative path for better compatibility
+            // Force CSS to refresh by adding a timestamp parameter
+            this.refreshCssFile();
+            
+            // Clear all caches to ensure fresh content
+            if (window.caches) {
+                caches.keys().then(function(names) {
+                    for (let name of names) {
+                        if (name.includes('css') || name.includes('dynamic')) {
+                            console.log('Deleting cache:', name);
+                            caches.delete(name);
+                        }
+                    }
+                });
+            }
+            
+            // Register or update the service worker
             navigator.serviceWorker.register('sw.js')
                 .then(registration => {
-                    console.log('SW registered: ', registration);
+                    console.log('SW registered:', registration);
+                    
+                    // Handle updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('New service worker installing:', newWorker);
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('New service worker installed, sending skipWaiting');
+                                newWorker.postMessage({ action: 'skipWaiting' });
+                            }
+                        });
+                    });
+                    
+                    // If there's an existing controller, tell it to clear CSS cache
+                    if (navigator.serviceWorker.controller) {
+                        console.log('Telling existing service worker to clear CSS cache');
+                        navigator.serviceWorker.controller.postMessage({ 
+                            action: 'clearCssCache'
+                        });
+                    }
                 })
-                .catch(registrationError => {
-                    console.log('SW registration failed: ', registrationError);
+                .catch(error => {
+                    console.error('SW registration failed:', error);
                 });
+            
+            // Listen for service worker updates
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('Service worker controller changed, reloading for fresh content');
+                // Add a small delay to ensure everything is ready
+                setTimeout(() => {
+                    // Refresh the CSS one more time before reload
+                    this.refreshCssFile();
+                    window.location.reload();
+                }, 500);
+            });
         }
-        // Request notification permission on load
-        this.setupNotificationPermission();
     }
-
+    
+    refreshCssFile() {
+        // Add timestamp parameter to CSS file to force browser to load fresh copy
+        const timestamp = new Date().getTime();
+        const cssLink = document.querySelector('link[href^="styles.css"]');
+        
+        if (cssLink) {
+            const href = cssLink.getAttribute('href');
+            // Extract base href without query parameters
+            const baseHref = href.split('?')[0];
+            // Set new href with timestamp
+            cssLink.setAttribute('href', `${baseHref}?v=${timestamp}`);
+            console.log('CSS refreshed with timestamp:', timestamp);
+        } else {
+            console.warn('CSS link not found in document');
+        }
+    }
+    
+    // Request notification permission on load
     setupNotificationPermission() {
         if ('Notification' in window) {
             if (Notification.permission === 'default') {
