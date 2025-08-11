@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A modern, accessible To-Do List application for managing daily tasks efficiently">
+    <meta name="theme-color" content="#667eea">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container" role="main">
+        <header>
+            <div class="header-top">
+                <h1><i class="fas fa-check-circle" aria-hidden="true"></i> To-Do List</h1>
+                <button 
+                    id="dark-mode-toggle" 
+                    class="dark-mode-btn" 
+                    title="Toggle Dark Mode"
+                    aria-label="Toggle dark mode"
+                    aria-pressed="false"
+                >
+                    <i class="fas fa-moon" aria-hidden="true"></i>
+                </button>
+            </div>
+            <p>Manage your daily tasks efficiently</p>
+        </header>
+
+        <div class="todo-app">
+            <form id="todo-form" class="todo-form" role="form" aria-label="Add new task">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="todo-input" 
+                        placeholder="Add a new task..." 
+                        required
+                        maxlength="100"
+                        aria-label="Task description"
+                        autocomplete="off"
+                    >
+                    <div class="priority-select-wrapper">
+                        <select 
+                            id="priority-select" 
+                            class="priority-select"
+                            aria-label="Task priority"
+                        >
+                            <option value="normal">Normal</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="category-select-wrapper">
+                        <select 
+                            id="category-select" 
+                            class="category-select"
+                            aria-label="Task category"
+                        >
+                            <option value="personal">Personal</option>
+                            <option value="work">Work</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="health">Health</option>
+                            <option value="learning">Learning</option>
+                        </select>
+                    </div>
+                    <input 
+                        type="date" 
+                        id="due-date-input" 
+                        class="due-date-input"
+                        title="Set due date (optional)"
+                        aria-label="Due date (optional)"
+                    >
+                    <button 
+                        type="submit" 
+                        class="add-btn"
+                        aria-label="Add task"
+                    >
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="search-container">
+                <div class="search-group">
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Search tasks..." 
+                        class="search-input"
+                        aria-label="Search tasks"
+                    >
+                </div>
+            </div>
+
+            <div class="todo-controls">
+                <div class="filter-buttons" role="tablist" aria-label="Filter tasks">
+                    <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
+                    <button class="filter-btn" data-filter="active" role="tab" aria-selected="false">Active</button>
+                    <button class="filter-btn" data-filter="completed" role="tab" aria-selected="false">Completed</button>
+                </div>
+                <div class="control-buttons">
+                    <button 
+                        id="clear-completed" 
+                        class="clear-btn"
+                        aria-label="Clear completed tasks"
+                    >
+                        Clear Completed
+                    </button>
+                    <button 
+                        id="export-btn" 
+                        class="export-btn" 
+                        title="Export Tasks"
+                        aria-label="Export tasks to file"
+                    >
+                        <i class="fas fa-download" aria-hidden="true"></i>
+                    </button>
+                    <button 
+                        id="import-btn" 
+                        class="import-btn" 
+                        title="Import Tasks"
+                        aria-label="Import tasks from file"
+                    >
+                        <i class="fas fa-upload" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <ul id="todo-list" class="todo-list" role="list" aria-label="Task list">
+                <!-- Tasks will be dynamically added here -->
+            </ul>
+
+            <div class="todo-stats" role="status" aria-live="polite">
+                <span id="tasks-count">0 tasks remaining</span>
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="import-file" accept=".json" style="display: none;" aria-label="Import file">
+
+    <!-- Toast notification container -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+        <div class="loading-spinner"></div>
+    </div>
+
+        <script src="script.js"></script>
+
+        <!-- Print stylesheet -->
+        <link rel="stylesheet" href="styles.css" media="print">
+
+        <!-- noscript fallback -->
+        <noscript>
+            <style>
+                .container, .todo-app, .todo-list, .todo-form, .search-container, .todo-controls, .todo-stats, .toast-container, .loading-overlay { display: none !important; }
+                .noscript-message { display: block !important; }
+            </style>
+            <div class="noscript-message" style="padding:2em;text-align:center;font-size:1.2em;color:#b91c1c;background:#fff3f3;">
+                <strong>JavaScript is required to use this To-Do List app.</strong><br>
+                Please enable JavaScript in your browser settings.
+            </div>
+        </noscript>
+</body>
+</html> 
